@@ -130,7 +130,25 @@ h1 { font-size: 20px; font-weight: 600; color: #7ecfee; letter-spacing: 2px; tex
 </style>
 </head>
 <body>
-<div class="wrap">
+
+<!-- SITE LOCK -->
+<div id="site-lock" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#07111f;display:flex;align-items:center;justify-content:center;z-index:999;">
+  <div style="background:#0b1a2c;border:1px solid #2a6090;border-radius:16px;padding:36px;min-width:300px;max-width:360px;width:90%;text-align:center;">
+    <div style="font-size:32px;margin-bottom:12px">🎮</div>
+    <h2 style="font-size:18px;font-weight:600;color:#7ecfee;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">SmartGaming</h2>
+    <p style="font-size:11px;color:#3a6080;letter-spacing:1px;text-transform:uppercase;margin-bottom:24px">1Vs1 Challenge</p>
+    <input type="password" id="site-pass" placeholder="Password de acesso…"
+      style="width:100%;padding:10px;background:#06101c;border:1px solid #1a3a5c;border-radius:6px;color:#7ecfee;font-size:14px;text-align:center;letter-spacing:3px;margin-bottom:10px;outline:none;"
+      onkeydown="if(event.key==='Enter')checkSitePass()">
+    <div id="site-err" style="font-size:11px;color:#e05050;min-height:16px;margin-bottom:10px"></div>
+    <button onclick="checkSitePass()"
+      style="width:100%;padding:11px;border-radius:6px;border:1px solid #2a6090;background:#0d2a45;color:#7ecfee;font-size:14px;cursor:pointer;font-weight:500;letter-spacing:1px">
+      Entrar
+    </button>
+  </div>
+</div>
+
+<div class="wrap" id="main-content" style="display:none">
   <h1>SmartGaming 1Vs1 Challenge</h1>
   <p class="sub">GTO Wizard · cEV · 50 mãos por drill</p>
 
@@ -387,7 +405,29 @@ const SW=160, SH=36, SR=3, CGAP=32, MGAP=10, PAD=20;
 const MATCH_H = SH+MGAP+SH;
 
 // ── PASSWORD ──────────────────────────────────────────────────────────────
-const ADMIN_PASS = '!Lindaemaravilhosa1';
+const SITE_PASS  = 'Gn@7xK#mQ2!vLpR9';           // password para ver o site
+const ADMIN_PASS = '!Lindaemaravilhosa1'; // password de admin
+
+function checkSitePass(){
+  const val = document.getElementById('site-pass').value;
+  if(val === ADMIN_PASS){
+    // Enter as Admin
+    isAdmin = true;
+    document.getElementById('site-lock').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    document.querySelector('h1').innerHTML += '<span class="admin-badge">ADMIN</span>';
+    loadSession();
+  } else if(val === SITE_PASS){
+    // Enter as regular user
+    document.getElementById('site-lock').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    loadSession();
+  } else {
+    document.getElementById('site-err').textContent = 'Password incorrecta.';
+    document.getElementById('site-pass').value = '';
+    document.getElementById('site-pass').focus();
+  }
+}
 let isAdmin = false;
 let pendingAction = null;
 
@@ -405,7 +445,9 @@ function checkPass(){
   if(val===ADMIN_PASS){
     isAdmin=true;
     document.getElementById('lock-modal').style.display='none';
-    document.querySelector('h1').innerHTML+='<span class="admin-badge">ADMIN</span>';
+    // Only add badge if not already there
+    if(!document.querySelector('.admin-badge'))
+      document.querySelector('h1').innerHTML+='<span class="admin-badge">ADMIN</span>';
     if(pendingAction){ pendingAction(); pendingAction=null; }
   } else {
     document.getElementById('lock-err').textContent='Password incorrecta.';
@@ -773,7 +815,11 @@ function saveSession(){
 function loadSession(){
   try {
     const raw=localStorage.getItem(STORAGE_KEY);
-    if(!raw) return false;
+    if(!raw){
+      TIERS.forEach(t=>{ renderList(t); setupCanvas(t); drawBracket(t); });
+      setupCanvas('final'); renderChampGrid();
+      return false;
+    }
     const data=JSON.parse(raw);
     Object.assign(players, data.players||{});
     Object.assign(rounds,  data.rounds||{});
@@ -785,6 +831,8 @@ function loadSession(){
     showToast(`📂 Sessão carregada (${d.toLocaleDateString('pt')} ${d.toLocaleTimeString('pt')})`, '#7ecfee');
     return true;
   } catch(e) {
+    TIERS.forEach(t=>{ renderList(t); setupCanvas(t); drawBracket(t); });
+    setupCanvas('final'); renderChampGrid();
     return false;
   }
 }
@@ -889,13 +937,14 @@ function afterMatch(tier){
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────
-// Try to load saved session on startup
-const loaded=loadSession();
-if(!loaded){
-  TIERS.forEach(t=>{ renderList(t); setupCanvas(t); drawBracket(t); });
-  setupCanvas('final');
-  renderChampGrid();
-}
+// Init — site is hidden until password entered
+// loadSession() is called after site password is verified
+TIERS.forEach(t=>{ renderList(t); setupCanvas(t); drawBracket(t); });
+setupCanvas('final');
+renderChampGrid();
+// Focus site password input
+document.getElementById('site-pass').focus();
 </script>
+</div>
 </body>
 </html>
