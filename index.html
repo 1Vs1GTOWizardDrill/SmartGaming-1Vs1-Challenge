@@ -669,8 +669,9 @@ function confirmMatch(){
 }
 function afterMatch(tier){
   drawBracket(tier);
+  saveSession();
   const champ=getChamp(tier);
-  if(champ){ renderChampGrid(); buildFinal(); }
+  if(champ){ renderChampGrid(); buildFinal(); drawBracket('final'); }
 }
 
 // ── SETUP UI ──────────────────────────────────────────────────────────────
@@ -724,10 +725,107 @@ function resetTier(tier){
   renderChampGrid();
 }
 
+// ── SAVE / LOAD ───────────────────────────────────────────────────────────
+const STORAGE_KEY = 'smartgaming_session';
+
+function getSessionData(){
+  return { players, rounds, savedAt: new Date().toISOString() };
+}
+
+function saveSession(){
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(getSessionData()));
+    showToast('💾 Sessão guardada!', '#4af090');
+  } catch(e) {
+    alert('Erro ao guardar: '+e.message);
+  }
+}
+
+function loadSession(){
+  try {
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return false;
+    const data=JSON.parse(raw);
+    Object.assign(players, data.players||{});
+    Object.assign(rounds,  data.rounds||{});
+    TIERS.forEach(t=>renderList(t));
+    TIERS.forEach(t=>{ setupCanvas(t); drawBracket(t); });
+    setupCanvas('final'); drawBracket('final');
+    renderChampGrid();
+    const d=new Date(data.savedAt);
+    showToast(`📂 Sessão carregada (${d.toLocaleDateString('pt')} ${d.toLocaleTimeString('pt')})`, '#7ecfee');
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+function exportJSON(){
+  const data=getSessionData();
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`smartgaming_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('📤 Ficheiro exportado!', '#f5c842');
+}
+
+function importJSON(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try {
+      const data=JSON.parse(ev.target.result);
+      if(!confirm('Isto vai substituir todos os dados actuais. Continuar?')) return;
+      Object.assign(players, data.players||{});
+      Object.assign(rounds,  data.rounds||{});
+      TIERS.forEach(t=>renderList(t));
+      TIERS.forEach(t=>{ setupCanvas(t); drawBracket(t); });
+      setupCanvas('final'); drawBracket('final');
+      renderChampGrid();
+      showToast('📥 Sessão importada com sucesso!', '#4af090');
+    } catch(err) {
+      alert('Erro ao importar: ficheiro inválido.');
+    }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
+
+// Toast notification
+function showToast(msg, color){
+  let toast=document.getElementById('toast');
+  if(!toast){
+    toast=document.createElement('div');
+    toast.id='toast';
+    toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:300;transition:opacity .4s;pointer-events:none;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent=msg;
+  toast.style.background='#0b1a2c';
+  toast.style.color=color||'#7ecfee';
+  toast.style.border=`1px solid ${color||'#2a6090'}`;
+  toast.style.opacity='1';
+  clearTimeout(toast._timer);
+  toast._timer=setTimeout(()=>toast.style.opacity='0', 2500);
+}
+
+// Auto-save every time a match is confirmed
+const _origAfterMatch=afterMatch;
+function afterMatch(tier){
+  _origAfterMatch(tier);
+  saveSession();
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────
-TIERS.forEach(t=>{ renderList(t); setupCanvas(t); drawBracket(t); });
-setupCanvas('final');
-renderChampGrid();
+// Try to load saved session on startup
+const loaded=loadSession();
+if(!loaded){
+  TIERS.forEach(t=>{ renderList(t); setupCanvas(t); drawBracket(t); });
+  setupCanvas('final');
+  renderChampGrid();
+}
 </script>
 </body>
 </html>
