@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bracket Bronze</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #07111f; font-family: sans-serif; color: #c8dff0; }
+.wrap { padding: 14px; }
+h1 { font-size: 20px; font-weight: 600; color: #7ecfee; letter-spacing: 2px; text-align: center; margin-bottom: 4px; text-transform: uppercase; }
+.sub { font-size: 11px; color: #3a6080; text-align: center; margin-bottom: 14px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* TABS */
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; justify-content: center; flex-wrap: wrap; }
+.tab { padding: 7px 14px; border-radius: 5px; border: 1px solid #1a3a5c; font-size: 12px; cursor: pointer; background: #0b1a2c; color: #4a8ab0; transition: all .15s; white-space: nowrap; }
+.tab.active { font-weight: 500; }
+.tab.t-bronze.active { background: rgba(205,127,50,.15); color: #cd9a50; border-color: #cd9a50; }
+.tab.t-silver.active { background: rgba(168,184,200,.1); color: #a8b8c8; border-color: #a8b8c8; }
+.tab.t-gold.active   { background: rgba(245,200,66,.1);  color: #f5c842; border-color: #f5c842; }
+.tab.t-plat.active   { background: rgba(126,184,245,.1); color: #7eb8f5; border-color: #7eb8f5; }
+.tab.t-final.active  { background: rgba(100,200,100,.1); color: #4af090; border-color: #4af090; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* TIER COLORS */
+.c-bronze { color: #cd9a50; } .c-silver { color: #a8b8c8; } .c-gold { color: #f5c842; } .c-plat { color: #7eb8f5; } .c-final { color: #4af090; }
+
+/* RULES */
+.rules-page { max-width: 680px; margin: 0 auto; }
+.rules-header { text-align: center; margin-bottom: 24px; }
+.rules-header h2 { font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+.rules-header p  { font-size: 12px; color: #3a6080; letter-spacing: 1px; text-transform: uppercase; }
+.rules-section { margin-bottom: 20px; }
+.rules-section-title { font-size: 10px; font-weight: 600; letter-spacing: 3px; color: #7ecfee; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+.rules-section-title::after { content:''; flex:1; height:1px; background:#1a3a5c; }
+.rule-list { display: flex; flex-direction: column; gap: 8px; }
+.rule-item { display: flex; gap: 14px; align-items: flex-start; background: #0b1a2c; border: 1px solid #1a3a5c; border-radius: 7px; padding: 13px 16px; }
+.rule-num { font-size: 22px; font-weight: 700; color: #7ecfee; opacity: .3; line-height: 1; min-width: 24px; }
+.rule-title { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 3px; }
+.rule-desc  { font-size: 12px; color: #5a8090; line-height: 1.6; }
+.rule-desc strong { color: #c8dff0; font-weight: 500; }
+.info-box { background: #0b1a2c; border: 1px solid #1a3a5c; border-left: 3px solid #00e5c8; border-radius: 7px; padding: 14px 16px; margin-top: 8px; font-size: 12px; color: #5a8090; line-height: 1.7; }
+.info-box strong { color: #00e5c8; }
+.warn-box { background: #0b1a2c; border: 1px solid #1a3a5c; border-left: 3px solid #f5c842; border-radius: 7px; padding: 14px 16px; margin-top: 8px; font-size: 12px; color: #5a8090; line-height: 1.7; }
+.warn-box strong { color: #f5c842; }
+.cards-row { display: grid; grid-template-columns: repeat(auto-fit,minmax(110px,1fr)); gap: 10px; margin-bottom: 20px; }
+.stat-card { background: #0b1a2c; border: 1px solid #1a3a5c; border-radius: 7px; padding: 12px; text-align: center; }
+.stat-val  { font-size: 24px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 4px; }
+.stat-label{ font-size: 10px; color: #3a6080; letter-spacing: 1px; text-transform: uppercase; }
+
+/* SETUP */
+.setup-box { max-width: 360px; margin: 0 auto 16px; background: #0b1a2c; border: 1px solid #1a3a5c; border-radius: 8px; padding: 16px; }
+.tier-badge { display: inline-block; padding: 3px 14px; border-radius: 999px; font-size: 12px; font-weight: 500; margin-bottom: 12px; }
+.tb-bronze { background:rgba(205,127,50,.15);color:#cd9a50;border:1px solid rgba(205,127,50,.35); }
+.tb-silver { background:rgba(168,184,200,.12);color:#a8b8c8;border:1px solid rgba(168,184,200,.35); }
+.tb-gold   { background:rgba(245,200,66,.12);color:#f5c842;border:1px solid rgba(245,200,66,.35); }
+.tb-plat   { background:rgba(126,184,245,.12);color:#7eb8f5;border:1px solid rgba(126,184,245,.35); }
+.player-list { list-style:none;margin-bottom:8px;min-height:24px; }
+.player-item { display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-radius:4px;font-size:12px;background:#06101c;color:#7ecfee;margin-bottom:3px;border:1px solid #1a3a5c; }
+.remove-btn { background:none;border:none;cursor:pointer;color:#2a5070;font-size:14px; }
+.remove-btn:hover { color:#e05050; }
+.add-row { display:flex;gap:5px; }
+.add-row input { flex:1;font-size:12px;padding:6px 8px;border:1px solid #1a3a5c;border-radius:4px;background:#06101c;color:#7ecfee; }
+.add-row input::placeholder { color:#2a5070; }
+.add-row button { font-size:13px;padding:6px 11px;border-radius:4px;border:1px solid #1a3a5c;background:#0b1a2c;cursor:pointer;color:#7ecfee; }
+.paste-hint { font-size:10px;color:#2a4a60;margin-top:5px; }
+.btn-row { display:flex;gap:8px;margin-top:14px; }
+.gen-btn { flex:1;padding:10px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:1px;transition:background .15s; border:1px solid; }
+.gen-bronze { border-color:#cd9a50;background:rgba(205,127,50,.12);color:#cd9a50; }
+.gen-silver { border-color:#a8b8c8;background:rgba(168,184,200,.1);color:#a8b8c8; }
+.gen-gold   { border-color:#f5c842;background:rgba(245,200,66,.1);color:#f5c842; }
+.gen-plat   { border-color:#7eb8f5;background:rgba(126,184,245,.1);color:#7eb8f5; }
+.rst-btn { padding:10px 14px;border-radius:6px;border:1px solid #3a1a1a;background:#1a0a0a;font-size:13px;cursor:pointer;color:#e05050; }
+
+/* BRACKET */
+.status { font-size:12px;color:#4af090;text-align:center;margin-bottom:5px;min-height:18px; }
+.nudge  { font-size:12px;color:#3a6080;text-align:center;margin-bottom:8px;min-height:16px; }
+.nudge strong { color:#7ecfee; }
+.scroll { overflow:auto;border:1px solid #1a3050;border-radius:8px;height:calc(100vh - 130px);min-height:500px; }
+
+/* FINAL TAB */
+.final-page { max-width: 700px; margin: 0 auto; }
+.champ-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 20px; }
+.champ-card { background: #0b1a2c; border: 1px solid #1a3a5c; border-radius: 8px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+.champ-card.ready { border-color: #1a8050; background: #0a2a1a; }
+.champ-icon { font-size: 20px; }
+.champ-info .label { font-size: 10px; color: #3a6080; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.champ-info .name  { font-size: 14px; font-weight: 600; color: #fff; }
+.champ-info .pending { font-size: 12px; color: #2a5070; font-style: italic; }
+.final-bracket-area { margin-top: 8px; }
+
+/* MODAL */
+.modal-bg { position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;z-index:100; }
+.modal { background:#0b1a2c;border:1px solid #2a6090;border-radius:12px;padding:22px;min-width:280px;max-width:340px;width:90%; }
+.modal h3 { font-size:14px;color:#7ecfee;margin-bottom:16px;text-align:center;letter-spacing:1px; }
+.mp { margin-bottom:12px; }
+.mp label { display:block;font-size:11px;color:#4a8ab0;margin-bottom:5px;font-weight:500; }
+.ms { display:flex;gap:8px; }
+.ms div { flex:1; }
+.ms input { width:100%;padding:7px;background:#06101c;border:1px solid #1a3a5c;border-radius:5px;color:#7ecfee;font-size:14px;text-align:center; }
+.ms span { font-size:10px;color:#3a6080;display:block;text-align:center;margin-top:3px; }
+.mdiv { border:none;border-top:1px solid #1a3a5c;margin:4px 0 12px; }
+.mbtns { display:flex;gap:8px;margin-top:14px; }
+.mbtns button { flex:1;padding:9px;border-radius:5px;border:1px solid #2a6090;background:#0d2a45;color:#7ecfee;font-size:13px;cursor:pointer; }
+.mbtns .ok { border-color:#1a8050;background:#0a2a1a;color:#4af090; }
+#tiebreak-section { background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.2);border-radius:6px;padding:10px;margin-top:4px;display:none; }
+#tiebreak-section .ms input { border-color:rgba(245,200,66,.4); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Torneio de Drills 1v1</h1>
+  <p class="sub">GTO Wizard · cEV · 50 mãos por drill</p>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="rules" onclick="switchTab('rules')">Regras</button>
+    <button class="tab t-bronze" data-tab="bronze" onclick="switchTab('bronze')">🥉 Bronze</button>
+    <button class="tab t-silver" data-tab="silver" onclick="switchTab('silver')">🥈 Silver</button>
+    <button class="tab t-gold"   data-tab="gold"   onclick="switchTab('gold')">🥇 Gold</button>
+    <button class="tab t-plat"   data-tab="plat"   onclick="switchTab('plat')">💎 Platinum</button>
+    <button class="tab t-final"  data-tab="final"  onclick="switchTab('final')">🏆 Final</button>
+  </div>
+
+  <!-- RULES -->
+  <div id="tab-rules" class="section active">
+    <div class="rules-page">
+      <div class="rules-header"><h2>Regulamento Oficial</h2><p>Temporada 1</p></div>
+      <div class="cards-row">
+        <div class="stat-card"><div class="stat-val">1v1</div><div class="stat-label">Formato</div></div>
+        <div class="stat-card"><div class="stat-val">2</div><div class="stat-label">Drills p/ match</div></div>
+        <div class="stat-card"><div class="stat-val">50</div><div class="stat-label">Mãos p/ drill</div></div>
+        <div class="stat-card"><div class="stat-val">cEV</div><div class="stat-label">Tipo</div></div>
+      </div>
+      <div class="rules-section">
+        <div class="rules-section-title">01 — Estrutura</div>
+        <div class="rule-list">
+          <div class="rule-item"><div class="rule-num">1</div><div class="rule-body"><div class="rule-title">Tiers</div><div class="rule-desc">Cada tier (Bronze, Silver, Gold, Platinum) corre a sua eliminatória independente. Os 4 campeões avançam para a <strong>Grande Final</strong>.</div></div></div>
+          <div class="rule-item"><div class="rule-num">2</div><div class="rule-desc-body"><div class="rule-title">Bracket</div><div class="rule-desc">Eliminatória direta com sorteio aleatório. O número de jogadores é arredondado para potência de 2 (2,4,8,16…) com <strong>byes automáticos</strong> na R1.</div></div></div>
+          <div class="rule-item"><div class="rule-num">3</div><div class="rule-body"><div class="rule-title">Marcação</div><div class="rule-desc">Os 2 jogadores combinam o match <strong>entre si, quando quiserem</strong>. O coach faz um aviso de tempo a tempo para quem demorar muito a marcar os seus jogos.</div></div></div>
+        </div>
+      </div>
+      <div class="rules-section">
+        <div class="rules-section-title">02 — Regras do match</div>
+        <div class="rule-list">
+          <div class="rule-item"><div class="rule-num">1</div><div class="rule-body"><div class="rule-title">Escolha dos drills</div><div class="rule-desc">Por <strong>ordem alfabética</strong> — primeiro nome no alfabeto escolhe primeiro. O segundo não pode repetir o mesmo drill. Ambos comunicam na <strong>hora do match</strong>.</div></div></div>
+          <div class="rule-item"><div class="rule-num">2</div><div class="rule-body"><div class="rule-title">Ordem de jogo</div><div class="rule-desc"><strong>Quem começa cada drill é o jogador que NÃO escolheu esse drill.</strong><br>Ex: A escolheu D1, B escolheu D2 → no D1 começa B, no D2 começa A.</div></div></div>
+          <div class="rule-item"><div class="rule-num">3</div><div class="rule-body"><div class="rule-title">Resultado</div><div class="rule-desc">Soma dos scores dos 2 drills. <strong>Maior total ganha</strong>.</div></div></div>
+        </div>
+      </div>
+      <div class="rules-section">
+        <div class="rules-section-title">03 — Situações especiais</div>
+        <div class="rule-list">
+          <div class="rule-item"><div class="rule-num">⚖️</div><div class="rule-body"><div class="rule-title">Empate</div><div class="rule-desc">O coach escolhe 1 drill de desempate. Ambos jogam o <strong>mesmo drill</strong>. Melhor score avança.</div></div></div>
+          <div class="rule-item"><div class="rule-num">🚪</div><div class="rule-body"><div class="rule-title">Desistência</div><div class="rule-desc">O adversário avança automaticamente (walkover).</div></div></div>
+        </div>
+        <div class="warn-box"><strong>Drills</strong> — todos têm de ser <strong>cEV</strong>.</div>
+      </div>
+      <div class="rules-section">
+        <div class="rules-section-title">04 — Grande Final</div>
+        <div class="info-box">Os <strong>4 campeões</strong> de cada tier jogam uma eliminatória final entre si. O vencedor é o campeão geral do torneio.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRONZE -->
+  <div id="tab-bronze" class="section">
+    <div class="setup-box">
+      <span class="tier-badge tb-bronze">Bronze</span>
+      <ul class="player-list" id="list-bronze"></ul>
+      <div class="add-row">
+        <input type="text" id="inp-bronze" placeholder="Nome ou cola lista…"
+               onkeydown="if(event.key==='Enter')addPlayer('bronze')"
+               onpaste="handlePaste(event,'bronze')">
+        <button onclick="addPlayer('bronze')">+</button>
+      </div>
+      <div class="paste-hint">Cola vários nomes — vírgula, ponto e vírgula ou nova linha</div>
+      <div class="btn-row">
+        <button class="gen-btn gen-bronze" onclick="generate('bronze')">↗ Gerar Sorteio</button>
+        <button class="rst-btn" onclick="resetTier('bronze')">↺</button>
+      </div>
+    </div>
+    <div id="status-bronze" class="status"></div>
+    <div id="nudge-bronze"  class="nudge"></div>
+    <div class="scroll"><canvas id="cv-bronze"></canvas></div>
+  </div>
+
+  <!-- SILVER -->
+  <div id="tab-silver" class="section">
+    <div class="setup-box">
+      <span class="tier-badge tb-silver">Silver</span>
+      <ul class="player-list" id="list-silver"></ul>
+      <div class="add-row">
+        <input type="text" id="inp-silver" placeholder="Nome ou cola lista…"
+               onkeydown="if(event.key==='Enter')addPlayer('silver')"
+               onpaste="handlePaste(event,'silver')">
+        <button onclick="addPlayer('silver')">+</button>
+      </div>
+      <div class="paste-hint">Cola vários nomes — vírgula, ponto e vírgula ou nova linha</div>
+      <div class="btn-row">
+        <button class="gen-btn gen-silver" onclick="generate('silver')">↗ Gerar Sorteio</button>
+        <button class="rst-btn" onclick="resetTier('silver')">↺</button>
+      </div>
+    </div>
+    <div id="status-silver" class="status"></div>
+    <div id="nudge-silver"  class="nudge"></div>
+    <div class="scroll"><canvas id="cv-silver"></canvas></div>
+  </div>
+
+  <!-- GOLD -->
+  <div id="tab-gold" class="section">
+    <div class="setup-box">
+      <span class="tier-badge tb-gold">Gold</span>
+      <ul class="player-list" id="list-gold"></ul>
+      <div class="add-row">
+        <input type="text" id="inp-gold" placeholder="Nome ou cola lista…"
+               onkeydown="if(event.key==='Enter')addPlayer('gold')"
+               onpaste="handlePaste(event,'gold')">
+        <button onclick="addPlayer('gold')">+</button>
+      </div>
+      <div class="paste-hint">Cola vários nomes — vírgula, ponto e vírgula ou nova linha</div>
+      <div class="btn-row">
+        <button class="gen-btn gen-gold" onclick="generate('gold')">↗ Gerar Sorteio</button>
+        <button class="rst-btn" onclick="resetTier('gold')">↺</button>
+      </div>
+    </div>
+    <div id="status-gold" class="status"></div>
+    <div id="nudge-gold"  class="nudge"></div>
+    <div class="scroll"><canvas id="cv-gold"></canvas></div>
+  </div>
+
+  <!-- PLAT -->
+  <div id="tab-plat" class="section">
+    <div class="setup-box">
+      <span class="tier-badge tb-plat">Platinum</span>
+      <ul class="player-list" id="list-plat"></ul>
+      <div class="add-row">
+        <input type="text" id="inp-plat" placeholder="Nome ou cola lista…"
+               onkeydown="if(event.key==='Enter')addPlayer('plat')"
+               onpaste="handlePaste(event,'plat')">
+        <button onclick="addPlayer('plat')">+</button>
+      </div>
+      <div class="paste-hint">Cola vários nomes — vírgula, ponto e vírgula ou nova linha</div>
+      <div class="btn-row">
+        <button class="gen-btn gen-plat" onclick="generate('plat')">↗ Gerar Sorteio</button>
+        <button class="rst-btn" onclick="resetTier('plat')">↺</button>
+      </div>
+    </div>
+    <div id="status-plat" class="status"></div>
+    <div id="nudge-plat"  class="nudge"></div>
+    <div class="scroll"><canvas id="cv-plat"></canvas></div>
+  </div>
+
+  <!-- FINAL -->
+  <div id="tab-final" class="section">
+    <div class="final-page">
+      <div class="rules-section-title" style="margin-bottom:16px">Campeões de cada tier</div>
+      <div class="champ-grid" id="champ-grid"></div>
+      <div id="final-status" class="status"></div>
+      <div id="final-nudge"  class="nudge"></div>
+      <div class="scroll"><canvas id="cv-final"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal-bg" style="display:none">
+  <div class="modal">
+    <h3 id="mtitle"></h3>
+    <div class="mp"><label id="lp1"></label><div class="ms"><div><input type="number" id="s1d1" min="0" max="100" placeholder="–"><span>Drill 1</span></div><div><input type="number" id="s1d2" min="0" max="100" placeholder="–"><span>Drill 2</span></div></div></div>
+    <hr class="mdiv">
+    <div class="mp"><label id="lp2"></label><div class="ms"><div><input type="number" id="s2d1" min="0" max="100" placeholder="–"><span>Drill 1</span></div><div><input type="number" id="s2d2" min="0" max="100" placeholder="–"><span>Drill 2</span></div></div></div>
+    <div id="tiebreak-section">
+      <hr class="mdiv">
+      <div style="font-size:11px;color:#f5c842;text-align:center;margin-bottom:8px;letter-spacing:1px">⚖️ EMPATE — DRILL DE DESEMPATE</div>
+      <div class="ms"><div><input type="number" id="s1d3" min="0" max="100" placeholder="–"><span id="lp1d3">J1 · D3</span></div><div><input type="number" id="s2d3" min="0" max="100" placeholder="–"><span id="lp2d3">J2 · D3</span></div></div>
+    </div>
+    <div class="mbtns"><button onclick="closeModal()">Cancelar</button><button class="ok" onclick="confirmMatch()">Confirmar</button></div>
+  </div>
+</div>
+
+<script>
+const TIERS = ['bronze','silver','gold','plat'];
+const TIER_COLORS = { bronze:'#cd9a50', silver:'#a8b8c8', gold:'#f5c842', plat:'#7eb8f5', final:'#4af090' };
+
+// State per tier
+const players = { bronze:[], silver:[], gold:[], plat:[] };
+const rounds  = { bronze:[], silver:[], gold:[], plat:[], final:[] };
+let hitZones = [];
+let activeMatch = null;  // {tier, ri, mi}
+
+const SW=160, SH=36, SR=3, CGAP=32, MGAP=10, PAD=20;
+const MATCH_H = SH+MGAP+SH;
+
+// ── MATCH ─────────────────────────────────────────────────────────────────
+function mkMatch(p1,p2){
+  const bye=(p1!==null)!==(p2!==null);
+  return{p1,p2,bye,winner:bye?(p1??p2):null,s1d1:null,s1d2:null,s2d1:null,s2d2:null,s1d3:null,s2d3:null};
+}
+
+// ── BUILD ─────────────────────────────────────────────────────────────────
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=0|Math.random()*(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function buildBracket(list){
+  if(!list.length) return [];
+  const sh=shuffle([...list]);
+  const n=sh.length;
+  let size=1; while(size<n) size<<=1;
+  const byeCount=size-n;
+  const realPairs=(size/2)-byeCount;
+  const seeded=[];
+  let pi=0;
+  for(let i=0;i<realPairs;i++){ seeded.push(sh[pi++]); seeded.push(sh[pi++]); }
+  for(let i=0;i<byeCount;i++){ seeded.push(sh[pi++]); seeded.push(null); }
+  const r1=[];
+  for(let i=0;i<seeded.length;i+=2) r1.push(mkMatch(seeded[i],seeded[i+1]));
+  const all=[r1];
+  let cur=r1.length;
+  while(cur>1){ cur=Math.floor(cur/2); const r=[]; for(let i=0;i<cur;i++) r.push(mkMatch(null,null)); all.push(r); }
+  r1.forEach((m,mi)=>{ if(m.bye&&m.winner!==null) _prop(all,0,mi,m.winner); });
+  return all;
+}
+
+function _prop(rs,ri,mi,w){
+  const nri=ri+1; if(nri>=rs.length)return;
+  const nmi=Math.floor(mi/2);
+  const nm=rs[nri][nmi]; if(!nm)return;
+  if(mi%2===0)nm.p1=w; else nm.p2=w;
+  if(nm.p1&&nm.p2){nm.bye=false;nm.winner=null;}
+}
+
+function propagate(tier,ri,mi,w){
+  const rs=rounds[tier];
+  const nri=ri+1; if(nri>=rs.length)return;
+  const nmi=Math.floor(mi/2);
+  const nm=rs[nri][nmi]; if(!nm)return;
+  if(mi%2===0)nm.p1=w; else nm.p2=w;
+  if(nm.p1&&nm.p2){nm.bye=false;nm.winner=null;}
+  // If tier champion decided, update final bracket
+  if(nri===rs.length-1&&nm.winner===null&&nm.p1&&nm.p2) checkFinalReady();
+  if(nri===rs.length-1&&nm.winner) updateFinalSlot(tier,nm.winner);
+}
+
+function getChamp(tier){
+  const r=rounds[tier]; if(!r.length)return null;
+  return r[r.length-1][0]?.winner??null;
+}
+
+// ── FINAL BRACKET ─────────────────────────────────────────────────────────
+// Final has up to 4 players (one per tier)
+// Build a 4-player bracket when enough champs are known
+function buildFinal(){
+  const champs=TIERS.map(t=>getChamp(t)).filter(Boolean);
+  if(champs.length<2) return;
+  rounds.final=buildBracket(champs);
+  drawBracket('final');
+  renderChampGrid();
+}
+
+function updateFinalSlot(tier, champ){
+  // Rebuild final with current champs
+  buildFinal();
+}
+
+function checkFinalReady(){
+  const champs=TIERS.map(t=>getChamp(t)).filter(Boolean);
+  if(champs.length>=2) buildFinal();
+}
+
+function renderChampGrid(){
+  const grid=document.getElementById('champ-grid');
+  grid.innerHTML='';
+  const labels={bronze:'🥉 Bronze',silver:'🥈 Silver',gold:'🥇 Gold',plat:'💎 Platinum'};
+  TIERS.forEach(t=>{
+    const champ=getChamp(t);
+    const card=document.createElement('div');
+    card.className='champ-card'+(champ?' ready':'');
+    card.innerHTML=`<div class="champ-icon">${champ?'🏆':'⏳'}</div>
+      <div class="champ-info">
+        <div class="label">${labels[t]}</div>
+        ${champ?`<div class="name" style="color:${TIER_COLORS[t]}">${champ}</div>`:'<div class="pending">Ainda a jogar…</div>'}
+      </div>`;
+    grid.appendChild(card);
+  });
+  // Final champion
+  const finalChamp=getChamp('final');
+  if(finalChamp){
+    document.getElementById('final-status').textContent=`🏆 Campeão Geral: ${finalChamp}`;
+  }
+}
+
+// ── DRAW ──────────────────────────────────────────────────────────────────
+function trunc(s,max){return s&&s.length>max?s.slice(0,max-1)+'…':(s||'');}
+
+function drawBracket(tier){
+  const cv=document.getElementById('cv-'+tier);
+  if(!cv) return;
+  const tierRounds=rounds[tier];
+  hitZones=hitZones.filter(z=>z.tier!==tier); // clear this tier's zones
+
+  if(!tierRounds.length){
+    cv.width=520;cv.height=100;cv.style.width='520px';cv.style.height='100px';
+    const ctx=cv.getContext('2d');
+    ctx.fillStyle='#07111f';ctx.fillRect(0,0,520,100);
+    ctx.fillStyle='#2a5070';ctx.font='13px sans-serif';ctx.textAlign='center';
+    ctx.fillText('Adiciona jogadores e clica em Gerar Sorteio.',260,50);
+    return;
+  }
+
+  const nR=tierRounds.length;
+  const totalSlots=tierRounds[0].length*2;
+  const CVW=PAD+nR*(SW+CGAP)-CGAP+PAD;
+  const r1count=tierRounds[0].length;
+  const minH=PAD*2+r1count*(MATCH_H+32);
+  const CVH=Math.max(minH,window.innerHeight-130);
+
+  cv.width=CVW;cv.height=CVH;cv.style.width=CVW+'px';cv.style.height=CVH+'px';
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#07111f';ctx.fillRect(0,0,CVW,CVH);
+
+  ctx.strokeStyle='rgba(30,90,140,0.07)';ctx.lineWidth=1;
+  for(let x=0;x<CVW;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,CVH);ctx.stroke();}
+  for(let y=0;y<CVH;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(CVW,y);ctx.stroke();}
+
+  const slotH=(CVH-PAD*2)/totalSlots;
+  const pos=tierRounds.map((round,ri)=>{
+    const colX=PAD+ri*(SW+CGAP);
+    const spm=totalSlots/round.length;
+    return round.map((m,mi)=>{
+      const cy=PAD+slotH*(mi*spm+spm/2);
+      return{x:colX,cy,p1y:cy-MGAP/2-SH,p2y:cy+MGAP/2};
+    });
+  });
+
+  const color=TIER_COLORS[tier]||'#7ecfee';
+
+  tierRounds.forEach((round,ri)=>{
+    const x=PAD+ri*(SW+CGAP);
+    const label=nR===1?'FINAL':ri===nR-1?'FINAL':ri===0?'R1':`R${ri+1}`;
+    ctx.fillStyle='#2a5070';ctx.font='10px sans-serif';ctx.textAlign='center';
+    ctx.fillText(label,x+SW/2,PAD-5);
+
+    round.forEach((m,mi)=>{
+      const{x:mx,cy,p1y,p2y}=pos[ri][mi];
+      drawSlot(ctx,mx,p1y,m,1,color);
+      if(!m.bye) drawSlot(ctx,mx,p2y,m,2,color);
+
+      if(!m.bye){
+        const bx=mx+SW+1;
+        ctx.strokeStyle='#1e5080';ctx.lineWidth=1;ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(mx+SW,p1y+SH/2);ctx.lineTo(bx,p1y+SH/2);
+        ctx.lineTo(bx,p2y+SH/2);ctx.lineTo(mx+SW,p2y+SH/2);
+        ctx.stroke();
+      }
+
+      if(ri<nR-1){
+        const np=pos[ri+1][Math.floor(mi/2)];
+        const tY=mi%2===0?np.p1y+SH/2:np.p2y+SH/2;
+        const fY=m.bye?p1y+SH/2:cy;
+        const midX=mx+SW+CGAP/2;
+        ctx.strokeStyle=m.bye?'#1a3a5c':'#1e5080';
+        ctx.lineWidth=1;ctx.setLineDash(m.bye?[4,4]:[]);
+        ctx.beginPath();
+        ctx.moveTo(mx+SW,fY);ctx.lineTo(midX,fY);
+        ctx.lineTo(midX,tY);ctx.lineTo(np.x,tY);
+        ctx.stroke();ctx.setLineDash([]);
+      }
+
+      if(!m.winner&&!m.bye&&m.p1&&m.p2){
+        hitZones.push({tier,x:mx,y:p1y,w:SW,h:MATCH_H,ri,mi});
+        ctx.strokeStyle='rgba(205,154,80,0.25)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+        ctx.strokeRect(mx,p1y,SW,MATCH_H);ctx.setLineDash([]);
+      }
+    });
+  });
+
+  const champ=tierRounds[tierRounds.length-1][0]?.winner;
+  if(champ){
+    const{x:cx,p1y}=pos[tierRounds.length-1][0];
+    ctx.fillStyle='#f5c842';ctx.font='bold 13px sans-serif';ctx.textAlign='left';
+    ctx.fillText('🏆 '+champ,cx,p1y-12);
+  }
+
+  // Nudge
+  let pending=0;
+  tierRounds.forEach(r=>r.forEach(m=>{if(!m.winner&&!m.bye&&m.p1&&m.p2)pending++;}));
+  const nudgeEl=document.getElementById('nudge-'+tier);
+  if(nudgeEl) nudgeEl.innerHTML=pending>0
+    ?`Faltam <strong>${pending} match(es)</strong> — clica num match para introduzir scores.`
+    :champ?`🏆 Campeão: <strong style="color:${color}">${champ}</strong>`:'';
+}
+
+function drawSlot(ctx,x,y,m,player,color){
+  const name=player===1?m.p1:m.p2;
+  const other=player===1?m.p2:m.p1;
+  const d1=player===1?m.s1d1:m.s2d1;
+  const d2=player===1?m.s1d2:m.s2d2;
+  const isW=m.winner&&m.winner===name;
+  const isL=m.winner&&m.winner===other;
+  const isTbd=!name;
+  ctx.fillStyle=isW?'#0a2a1a':isL?'#0b0e14':isTbd?'#080e18':'#0d2a45';
+  rrect(ctx,x,y,SW,SH,SR,true,false);
+  if(isW){ctx.strokeStyle='#1a8050';ctx.lineWidth=1.8;}
+  else if(isL){ctx.strokeStyle='#1a1e1e';ctx.lineWidth=0.5;}
+  else if(isTbd){ctx.strokeStyle='#1a3050';ctx.lineWidth=0.5;ctx.setLineDash([3,2]);}
+  else{ctx.strokeStyle=color||'#2a6a50';ctx.lineWidth=1;}
+  rrect(ctx,x,y,SW,SH,SR,false,true);ctx.setLineDash([]);
+  ctx.globalAlpha=isL?0.3:1;
+  ctx.textAlign='left';
+  ctx.font=isW?'bold 12px sans-serif':'12px sans-serif';
+  ctx.fillStyle=isW?'#4af090':isTbd?'#1e3a50':'#c8dff0';
+  ctx.fillText(isTbd?'–':trunc(name,17),x+7,y+15);
+  if(d1!=null){ctx.font='10px sans-serif';ctx.fillStyle=isW?'#2a9060':'#2a5070';ctx.fillText(`${d1}+${d2}=${d1+d2}`,x+7,y+29);}
+  ctx.globalAlpha=1;
+}
+
+function rrect(ctx,x,y,w,h,r,fill,stroke){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();if(fill)ctx.fill();if(stroke)ctx.stroke();
+}
+
+// ── CLICK ─────────────────────────────────────────────────────────────────
+function setupCanvasClick(tier){
+  const cv=document.getElementById('cv-'+tier);
+  if(!cv) return;
+  cv.onclick=e=>{
+    const rect=cv.getBoundingClientRect();
+    const scale=cv.width/rect.width;
+    const mx=(e.clientX-rect.left)*scale, my=(e.clientY-rect.top)*scale;
+    for(const z of hitZones){
+      if(z.tier===tier&&mx>=z.x&&mx<=z.x+z.w&&my>=z.y&&my<=z.y+z.h){
+        openModal(z.tier,z.ri,z.mi);break;
+      }
+    }
+  };
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────
+function openModal(tier,ri,mi){
+  const m=rounds[tier][ri][mi];
+  activeMatch={tier,ri,mi};
+  document.getElementById('mtitle').textContent=`${m.p1}  vs  ${m.p2}`;
+  document.getElementById('lp1').textContent=m.p1;
+  document.getElementById('lp2').textContent=m.p2;
+  document.getElementById('lp1d3').textContent=`${m.p1} · D3`;
+  document.getElementById('lp2d3').textContent=`${m.p2} · D3`;
+  ['s1d1','s1d2','s2d1','s2d2','s1d3','s2d3'].forEach(id=>document.getElementById(id).value=m[id]??'');
+  const hasTie=m.s1d3!==null||m.s2d3!==null;
+  document.getElementById('tiebreak-section').style.display=hasTie?'block':'none';
+  document.getElementById('modal').style.display='flex';
+}
+
+function closeModal(){
+  document.getElementById('modal').style.display='none';
+  document.getElementById('tiebreak-section').style.display='none';
+  activeMatch=null;
+}
+
+function confirmMatch(){
+  if(!activeMatch)return;
+  const s1d1=parseFloat(document.getElementById('s1d1').value)||0;
+  const s1d2=parseFloat(document.getElementById('s1d2').value)||0;
+  const s2d1=parseFloat(document.getElementById('s2d1').value)||0;
+  const s2d2=parseFloat(document.getElementById('s2d2').value)||0;
+  if(s1d1+s1d2+s2d1+s2d2===0){alert('Introduz pelo menos um score.');return;}
+  const s1=s1d1+s1d2, s2=s2d1+s2d2;
+  const tb=document.getElementById('tiebreak-section');
+  if(s1===s2){
+    if(tb.style.display==='none'){
+      tb.style.display='block';
+      document.getElementById('s1d3').value='';
+      document.getElementById('s2d3').value='';
+      document.getElementById('s1d3').focus();
+      return;
+    }
+    const s1d3=parseFloat(document.getElementById('s1d3').value)||0;
+    const s2d3=parseFloat(document.getElementById('s2d3').value)||0;
+    if(s1d3===0&&s2d3===0){alert('Introduz o score do drill de desempate.');return;}
+    const{tier,ri,mi}=activeMatch;
+    const m=rounds[tier][ri][mi];
+    Object.assign(m,{s1d1,s1d2,s2d1,s2d2,s1d3,s2d3});
+    m.winner=s1d3>=s2d3?m.p1:m.p2;
+    propagate(tier,ri,mi,m.winner);
+    afterMatchDecided(tier,ri,mi);
+    closeModal();return;
+  }
+  const{tier,ri,mi}=activeMatch;
+  const m=rounds[tier][ri][mi];
+  Object.assign(m,{s1d1,s1d2,s2d1,s2d2,s1d3:null,s2d3:null});
+  m.winner=s1>s2?m.p1:m.p2;
+  propagate(tier,ri,mi,m.winner);
+  afterMatchDecided(tier,ri,mi);
+  closeModal();
+}
+
+function afterMatchDecided(tier,ri,mi){
+  drawBracket(tier);
+  // Check if this tier now has a champion
+  const champ=getChamp(tier);
+  if(champ){
+    renderChampGrid();
+    buildFinal();
+    drawBracket('final');
+  }
+}
+
+// ── SETUP UI ──────────────────────────────────────────────────────────────
+function renderList(tier){
+  const ul=document.getElementById('list-'+tier);
+  if(!ul)return;
+  ul.innerHTML='';
+  players[tier].forEach((p,i)=>{
+    const li=document.createElement('li');
+    li.className='player-item';
+    li.innerHTML=`<span>${p}</span><button class="remove-btn" onclick="removePlayer('${tier}',${i})">×</button>`;
+    ul.appendChild(li);
+  });
+}
+
+function addPlayer(tier){
+  const inp=document.getElementById('inp-'+tier);
+  const raw=inp.value.trim();if(!raw)return;
+  raw.split(/[,;\n\r\t]+/).map(n=>n.trim()).filter(Boolean).forEach(n=>players[tier].push(n));
+  inp.value='';renderList(tier);
+}
+
+function handlePaste(e,tier){
+  e.preventDefault();
+  const text=(e.clipboardData||window.clipboardData).getData('text');
+  text.split(/[,;\n\r\t]+/).map(n=>n.trim()).filter(Boolean).forEach(n=>players[tier].push(n));
+  document.getElementById('inp-'+tier).value='';renderList(tier);
+}
+
+function removePlayer(tier,idx){players[tier].splice(idx,1);renderList(tier);}
+
+function generate(tier){
+  if(players[tier].length<2){alert('Adiciona pelo menos 2 jogadores.');return;}
+  rounds[tier]=buildBracket(players[tier]);
+  const n=players[tier].length;
+  let size=1;while(size<n)size<<=1;
+  document.getElementById('status-'+tier).textContent=
+    `✓ Bracket gerado — ${n} jogadores · ${size-n} bye(s)`;
+  setupCanvasClick(tier);
+  drawBracket(tier);
+}
+
+function resetTier(tier){
+  if(!confirm(`Apagar tudo do tier ${tier}?`))return;
+  players[tier]=[];rounds[tier]=[];
+  renderList(tier);
+  document.getElementById('status-'+tier).textContent='';
+  document.getElementById('nudge-'+tier).textContent='';
+  drawBracket(tier);
+  renderChampGrid();
+  buildFinal();
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.getAttribute('data-tab')===t));
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='final'){renderChampGrid();drawBracket('final');}
+  else if(TIERS.includes(t)){drawBracket(t);}
+}
+
+// Init
+TIERS.forEach(t=>{renderList(t);setupCanvasClick(t);drawBracket(t);});
+setupCanvasClick('final');
+renderChampGrid();
+</script>
+</body>
+</html>
