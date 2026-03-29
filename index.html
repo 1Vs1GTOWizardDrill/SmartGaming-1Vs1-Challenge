@@ -669,7 +669,6 @@ function confirmMatch(){
 }
 function afterMatch(tier){
   drawBracket(tier);
-  saveSession();
   const champ=getChamp(tier);
   if(champ){ renderChampGrid(); buildFinal(); drawBracket('final'); }
 }
