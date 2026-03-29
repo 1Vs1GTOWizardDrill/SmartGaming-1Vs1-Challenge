@@ -290,18 +290,42 @@ h1 { font-size: 20px; font-weight: 600; color: #7ecfee; letter-spacing: 2px; tex
 
   <!-- BRACKETS por tier -->
   <div id="tab-bronze-bracket" class="section">
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:10px">
+      <button onclick="requireAdmin(saveSession,'Password para guardar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #1a8050;background:#0a2a1a;color:#4af090;font-size:13px;cursor:pointer;font-weight:500">💾 Guardar Sessão</button>
+      <button onclick="requireAdmin(loadSession,'Password para carregar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #2a6090;background:#0d2a45;color:#7ecfee;font-size:13px;cursor:pointer">📂 Carregar Sessão</button>
+      <button onclick="requireAdmin(deleteSession,'Password para apagar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #3a1a1a;background:#1a0a0a;color:#e05050;font-size:13px;cursor:pointer">🗑️ Apagar Save</button>
+      <button onclick="requireAdmin(newSeason,'Password para nova temporada')" style="padding:8px 20px;border-radius:6px;border:1px solid #2a4a7a;background:#0a1a2c;color:#7eb8f5;font-size:13px;cursor:pointer">🆕 Nova Temporada</button>
+    </div>
     <div id="nudge-bronze" class="nudge"></div>
     <div class="scroll"><canvas id="cv-bronze"></canvas></div>
   </div>
   <div id="tab-silver-bracket" class="section">
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:10px">
+      <button onclick="requireAdmin(saveSession,'Password para guardar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #1a8050;background:#0a2a1a;color:#4af090;font-size:13px;cursor:pointer;font-weight:500">💾 Guardar Sessão</button>
+      <button onclick="requireAdmin(loadSession,'Password para carregar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #2a6090;background:#0d2a45;color:#7ecfee;font-size:13px;cursor:pointer">📂 Carregar Sessão</button>
+      <button onclick="requireAdmin(deleteSession,'Password para apagar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #3a1a1a;background:#1a0a0a;color:#e05050;font-size:13px;cursor:pointer">🗑️ Apagar Save</button>
+      <button onclick="requireAdmin(newSeason,'Password para nova temporada')" style="padding:8px 20px;border-radius:6px;border:1px solid #2a4a7a;background:#0a1a2c;color:#7eb8f5;font-size:13px;cursor:pointer">🆕 Nova Temporada</button>
+    </div>
     <div id="nudge-silver" class="nudge"></div>
     <div class="scroll"><canvas id="cv-silver"></canvas></div>
   </div>
   <div id="tab-gold-bracket" class="section">
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:10px">
+      <button onclick="requireAdmin(saveSession,'Password para guardar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #1a8050;background:#0a2a1a;color:#4af090;font-size:13px;cursor:pointer;font-weight:500">💾 Guardar Sessão</button>
+      <button onclick="requireAdmin(loadSession,'Password para carregar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #2a6090;background:#0d2a45;color:#7ecfee;font-size:13px;cursor:pointer">📂 Carregar Sessão</button>
+      <button onclick="requireAdmin(deleteSession,'Password para apagar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #3a1a1a;background:#1a0a0a;color:#e05050;font-size:13px;cursor:pointer">🗑️ Apagar Save</button>
+      <button onclick="requireAdmin(newSeason,'Password para nova temporada')" style="padding:8px 20px;border-radius:6px;border:1px solid #2a4a7a;background:#0a1a2c;color:#7eb8f5;font-size:13px;cursor:pointer">🆕 Nova Temporada</button>
+    </div>
     <div id="nudge-gold" class="nudge"></div>
     <div class="scroll"><canvas id="cv-gold"></canvas></div>
   </div>
   <div id="tab-plat-bracket" class="section">
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:10px">
+      <button onclick="requireAdmin(saveSession,'Password para guardar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #1a8050;background:#0a2a1a;color:#4af090;font-size:13px;cursor:pointer;font-weight:500">💾 Guardar Sessão</button>
+      <button onclick="requireAdmin(loadSession,'Password para carregar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #2a6090;background:#0d2a45;color:#7ecfee;font-size:13px;cursor:pointer">📂 Carregar Sessão</button>
+      <button onclick="requireAdmin(deleteSession,'Password para apagar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #3a1a1a;background:#1a0a0a;color:#e05050;font-size:13px;cursor:pointer">🗑️ Apagar Save</button>
+      <button onclick="requireAdmin(newSeason,'Password para nova temporada')" style="padding:8px 20px;border-radius:6px;border:1px solid #2a4a7a;background:#0a1a2c;color:#7eb8f5;font-size:13px;cursor:pointer">🆕 Nova Temporada</button>
+    </div>
     <div id="nudge-plat" class="nudge"></div>
     <div class="scroll"><canvas id="cv-plat"></canvas></div>
   </div>
@@ -309,6 +333,10 @@ h1 { font-size: 20px; font-weight: 600; color: #7ecfee; letter-spacing: 2px; tex
   <!-- FINAL -->
   <div id="tab-final" class="section">
     <div class="final-page">
+      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:14px">
+        <button onclick="requireAdmin(saveSession,'Password para guardar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #1a8050;background:#0a2a1a;color:#4af090;font-size:13px;cursor:pointer;font-weight:500">💾 Guardar Sessão</button>
+        <button onclick="requireAdmin(loadSession,'Password para carregar sessão')" style="padding:8px 20px;border-radius:6px;border:1px solid #2a6090;background:#0d2a45;color:#7ecfee;font-size:13px;cursor:pointer">📂 Carregar Sessão</button>
+      </div>
       <div class="rules-section-title" style="margin-bottom:16px">Campeões de cada tier</div>
       <div class="champ-grid" id="champ-grid"></div>
       <div id="final-status" class="status"></div>
@@ -759,6 +787,47 @@ function loadSession(){
   } catch(e) {
     return false;
   }
+}
+
+function deleteSession(){
+  if(!confirm('Tens a certeza que queres apagar a sessão guardada? Esta acção não pode ser desfeita.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  // Clear all data from memory too
+  TIERS.forEach(t=>{
+    players[t]=[];
+    rounds[t]=[];
+    const st=document.getElementById('status-'+t); if(st) st.textContent='';
+    const nd=document.getElementById('nudge-'+t);  if(nd) nd.textContent='';
+    renderList(t);
+    drawBracket(t);
+  });
+  rounds.final=[];
+  renderChampGrid();
+  drawBracket('final');
+  showToast('🗑️ Sessão apagada!', '#e05050');
+}
+
+function newSeason(){
+  if(!confirm('Isto vai apagar TODOS os dados actuais (jogadores, brackets e scores) e começar uma nova temporada. Tens a certeza?')) return;
+  // Clear all data
+  TIERS.forEach(t=>{
+    players[t]=[];
+    rounds[t]=[];
+    const st=document.getElementById('status-'+t);
+    if(st) st.textContent='';
+    const nd=document.getElementById('nudge-'+t);
+    if(nd) nd.textContent='';
+    renderList(t);
+    drawBracket(t);
+  });
+  rounds.final=[];
+  renderChampGrid();
+  drawBracket('final');
+  // Remove save
+  localStorage.removeItem(STORAGE_KEY);
+  // Go back to rules
+  switchTab('rules');
+  showToast('🆕 Nova temporada iniciada!', '#7ecfee');
 }
 
 function exportJSON(){
