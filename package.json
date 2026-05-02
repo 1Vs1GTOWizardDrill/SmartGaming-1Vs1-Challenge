@@ -1,0 +1,9 @@
+{
+  "name": "hrc-trainer-mvp",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "import": "node trainer/import-hrc.mjs",
+    "quiz": "node trainer/quiz.mjs"
+  }
+}
